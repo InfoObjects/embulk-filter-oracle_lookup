@@ -1,0 +1,46 @@
+exec:
+  max_threads: 2
+  min_output_tasks: 1
+in:
+  type: file
+  path_prefix: C:\Users\Abhishek Gupta\Desktop\new one\embulk-filter-oracle_lookup\calendar.csv
+  parser:
+    type: csv
+    columns:
+      - { name: dim_calendar_key, type: long }
+      - { name: year_number, type: long }
+      - { name: quarter_number, type: long }
+      - { name: attr_1, type: string }
+filters:
+  - type: oracle_lookup
+    lookup_destination: mysql
+    host: localhost
+    port: 1521
+    database: XE
+    tablename: country
+    username: sys as sysdba
+    password: root
+    mapping_from:
+      - quarter_number
+      - attr_1
+    mapping_to:
+      - id
+      - country_address
+    new_columns:
+      - { name: country_name, type: string }
+      - { name: country_address, type: string }
+out:
+  type: file
+  path_prefix: C:\Users\Abhishek Gupta\Desktop\A\output.csv
+  file_ext: csv
+  formatter:
+      type: csv
+      delimiter: "\t"
+      newline: CRLF
+      newline_in_field: LF
+      charset: UTF-8
+      quote_policy: MINIMAL
+      quote: '"'
+      escape: "\\"
+      null_string: "\\N"
+      default_timezone: 'UTC'
