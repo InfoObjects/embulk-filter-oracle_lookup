@@ -81,9 +81,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Infoobjects Inc."]
   spec.summary       = %[Oracle Lookup filter plugin for Embulk]
   spec.description   = %[Oracle Lookup]
-  spec.email         = ["abhishek.gupta4@fisglobal.com"]
+  spec.email         = ["utkarsh@infoobjects.com"]
   spec.licenses      = ["MIT"]
-  # TODO set this: spec.homepage      = "https://github.com/abhishek.gupta4/embulk-filter-oracle_lookup"
+  # TODO set this: spec.homepage      = "https://github.com/InfoObjects/embulk-filter-oracle_lookup"
 
   spec.files         = `git ls-files`.split("\n") + Dir["classpath/*.jar"]
   spec.test_files    = spec.files.grep(%r"^(test|spec)/")
