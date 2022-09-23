@@ -3,7 +3,7 @@ exec:
   min_output_tasks: 1
 in:
   type: file
-  path_prefix: C:\Users\Abhishek Gupta\Desktop\new one\embulk-filter-oracle_lookup\calendar.csv
+  path_prefix: C:\Users\Abhishek Gupta\Desktop\github\embulk-filter-oracle_lookup\calendar.csv
   parser:
     type: csv
     columns:
@@ -17,7 +17,7 @@ filters:
     host: localhost
     port: 1521
     database: XE
-    tablename: country
+    table: country
     username: sys as sysdba
     password: root
     mapping_from:

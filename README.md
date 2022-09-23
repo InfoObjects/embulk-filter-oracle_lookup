@@ -1,3 +1,12 @@
+
+<p align="center">
+  <a href="https://www.infoobjects.com/" target="blank"><img src="screenshots/logo.png" width="150" alt="InfoObjects Logo" /></a>
+</p>
+<p align="center">Infoobjects is a consulting company that helps enterprises transform how and where they run applications and infrastructure.</p>
+
+# Postgres lookup filter plugin for Embulk
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 # Oracle lookup filter plugin for Embulk
 ​
 An Embulk filter plugin for Lookup Transformation with Oracle database
@@ -8,7 +17,7 @@ An Embulk filter plugin for Lookup Transformation with Oracle database
     - **host**: database host (example `localhost`) (required)
     - **port**: database port (example port for oracle `1521`) (required)
     - **database**: database name (required)
-    - **tablename**: table name of your database (required)
+    - **table**: table name of your database (required)
     - **username**: username for your database (required)
     - **password**: password for database (required)
     - **mapping_from**: (Name of columns to be matched with table 2 columns) (required)
@@ -132,3 +141,6 @@ Release gem:
 ```
 $ ./gradlew gemPush
 ```
+## Licensing
+
+InfoObjects [license](LICENSE) (MIT License)
