@@ -2,6 +2,7 @@ package org.embulk.filter.oracle_lookup;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class OracleConnection {
 
@@ -20,14 +21,18 @@ public class OracleConnection {
     }
 
     public static Connection getConnection(OracleLookupFilterPlugin.PluginTask task){
-        if(connection==null){
-            try {
-                new OracleConnection(task);
-                return connection;
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException();
+        try {
+            if(connection==null || connection.isClosed()){
+                try {
+                    new OracleConnection(task);
+                    return connection;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException();
+                }
             }
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
         return connection;
     }
