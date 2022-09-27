@@ -13,7 +13,6 @@ in:
       - { name: attr_1, type: string }
 filters:
   - type: oracle_lookup
-    lookup_destination: mysql
     host: localhost
     port: 1521
     database: XE
