@@ -13,6 +13,8 @@ in:
       - { name: attr_1, type: string }
 filters:
   - type: oracle_lookup
+    driver_path: C:/Users/Abhishek Gupta/Desktop/mysql-connector-java-8.0.29-tidb-1.0.1.jar
+    driver_class: oracle.jdbc.driver.OracleDriver
     host: localhost
     port: 1521
     database: XE

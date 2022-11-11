@@ -1,19 +1,13 @@
 package org.embulk.filter.oracle_lookup;
 
 import com.google.common.collect.ImmutableList;
-import org.embulk.config.Config;
-import org.embulk.config.ConfigSource;
-import org.embulk.config.Task;
-import org.embulk.config.TaskSource;
+import org.embulk.config.*;
 import org.embulk.spi.*;
 import org.embulk.spi.time.Timestamp;
 import org.embulk.spi.type.Types;
 import java.sql.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OracleLookupFilterPlugin
         implements FilterPlugin {
@@ -46,6 +40,14 @@ public class OracleLookupFilterPlugin
 
         @Config("new_columns")
         public SchemaConfig getNewColumns();
+
+        @Config("driver_path")
+        @ConfigDefault("null")
+        public Optional<String> getDriverPath();
+
+        @Config("driver_class")
+        @ConfigDefault("null")
+        public Optional<String> getDriverClass();
     }
 
 
@@ -95,6 +97,20 @@ public class OracleLookupFilterPlugin
     private Map<String, List<String>> getKeyValueMap(PluginTask task) throws SQLException {
         Map<String, List<String>> map = new HashMap<>();
         Connection con = OracleConnection.getConnection(task);
+        DatabaseMetaData databaseMetaData =con.getMetaData();
+        String identifierQuoteString=databaseMetaData.getIdentifierQuoteString();
+        String schemaName=null;
+
+        if (schemaName != null) {
+            String sql = "SET search_path TO " + identifierQuoteString + schemaName + identifierQuoteString;
+            Statement stmt = con.createStatement();
+            try {
+                stmt.executeUpdate(sql);
+            } finally {
+                stmt.close();
+            }
+        }
+        con.setAutoCommit(false);
         try {
 
             List<String> targetColumns = task.getMappingTo();
