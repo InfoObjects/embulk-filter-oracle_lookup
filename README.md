@@ -97,7 +97,6 @@ Output File generated :-
 ​
 ```yaml
  - type: oracle_lookup
-     lookup_destination: mysql
      host: localhost
      port: 1521
      database: XE
