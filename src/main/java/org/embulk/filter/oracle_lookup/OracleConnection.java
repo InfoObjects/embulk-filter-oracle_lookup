@@ -25,12 +25,19 @@ public class OracleConnection {
 
     private OracleConnection(OracleLookupFilterPlugin.PluginTask task) throws Exception {
         try{
-            if(task.getDriverClass().isPresent()){
+            if(task.getDriverClass().isPresent() && task.getDriverPath().isPresent()){
                 this.loadMySqlJdbcDriver(task.getDriverClass().get(),task.getDriverPath());
             }else{
                 this.loadMySqlJdbcDriver("oracle.jdbc.driver.OracleDriver",task.getDriverPath());
             }
-            String url = "jdbc:oracle:thin:@" + task.getHost() + ":"+task.getPort()+":"+task.getDatabase();
+            String url;
+            if(task.getURL().isPresent()){
+                url= task.getURL().get();
+            }else if(task.getSID().isPresent()){
+                url="jdbc:oracle:thin:@" + task.getHost() + ":"+task.getPort()+":"+task.getSID();
+            }else{
+                throw new RuntimeException("sid name must be provided if url is not provided by the user");
+            }
             connection= DriverManager.getConnection(url, task.getUserName(), task.getPassword());
         }catch (Exception e){
             e.printStackTrace();

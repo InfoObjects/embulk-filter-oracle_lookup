@@ -1,0 +1,36 @@
+in:
+  type: mysql
+  host: localhost
+  user: root
+  password: 'passsword'
+  database: test
+  table: database_table
+filters:
+  - type: oracle_lookup
+    driver_path: "C:/drivers/ojdbc8.jar"
+    driver_class: 'oracle.jdbc.driver.OracleDriver'
+    host: localhost
+    port: 1521
+    database: orcl
+    table_name: lookup_table
+    username: MYUSER
+    password: ABCD
+    mapping_from:
+      - ID
+      - NAME
+    mapping_to:
+      - ID
+      - NAME
+    new_columns:
+      - { name: PIN, type: string }
+      - { name: GENDER, type: string }
+      - { name: PHONE_NUMBER, type: string }
+
+out:
+  type: mysql
+  host: localhost
+  user: root
+  password: 'passsword'
+  database: test
+  table: output_table_1
+  mode: truncate_insert

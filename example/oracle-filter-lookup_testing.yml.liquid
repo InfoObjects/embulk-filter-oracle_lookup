@@ -1,0 +1,42 @@
+in:
+  type: jdbc
+  driver_path: "C:/drivers/ojdbc8.jar"
+  driver_class: 'oracle.jdbc.driver.OracleDriver'
+  url: jdbc:oracle:thin:@localhost:1521:orcl
+  database: DEMO
+  user: MYUSER
+  password: ABCD
+  table: database_table
+  column_options:
+    id: {value_type: long}
+filters:
+  - type: oracle_lookup
+    driver_path: "C:/drivers/ojdbc8.jar"
+    driver_class: 'oracle.jdbc.driver.OracleDriver'
+    host: localhost
+    port: 1521
+    database: orcl
+    table_name: lookup_table
+    username: MYUSER
+    password: ABCD
+    mapping_from:
+      - ID
+      - NAME
+    mapping_to:
+      - ID
+      - NAME
+    new_columns:
+      - { name: PIN, type: string }
+      - { name: GENDER, type: string }
+      - { name: PHONE_NUMBER, type: string }
+
+out:
+  type: jdbc
+  driver_path: "C:/drivers/ojdbc8.jar"
+  driver_class: 'oracle.jdbc.driver.OracleDriver'
+  url: jdbc:oracle:thin:@localhost:1521:orcl
+  database: DEMO
+  user: MYUSER
+  password: ABCD
+  table: output_table_1
+  mode: insert_direct

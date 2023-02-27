@@ -1,0 +1,55 @@
+exec:
+  max_threads: 1
+  min_output_tasks: 1
+in:
+  type: file
+  path_prefix: "..path../database_table.csv"
+  parser:
+    charset: UTF-8
+    type: csv
+    delimiter: ','
+    quote: '"'
+    header_line: true
+    columns:
+     - { name: ID, type: long }
+     - { name: Name, type: string }
+     - { name: Age, type: string }
+     - { name: Address, type: string }
+     - { name: City, type: string }
+     - { name: Country, type: string }
+     - { name: Salary, type: long }filters:
+  - type: oracle_lookup
+    driver_path: "C:/drivers/ojdbc8.jar"
+    driver_class: 'oracle.jdbc.driver.OracleDriver'
+    host: localhost
+    port: 1521
+    database: orcl
+    table: lookup_table
+    username: MYUSER
+    password: ABCD
+    mapping_from:
+      - ID
+      - NAME
+    mapping_to:
+      - ID
+      - NAME
+    new_columns:
+      - { name: PIN, type: string }
+      - { name: GENDER, type: string }
+      - { name: PHONE_NUMBER, type: string }
+
+out:
+  type: file
+  path_prefix: "..path../output.csv"
+  file_ext: csv
+  formatter:
+    type: csv
+    delimiter: ","
+    newline: CRLF
+    newline_in_field: LF
+    charset: UTF-8
+    quote_policy: MINIMAL
+    quote: '"'
+    escape: "\\"
+    null_string: "\\N"
+    default_timezone: 'UTC'

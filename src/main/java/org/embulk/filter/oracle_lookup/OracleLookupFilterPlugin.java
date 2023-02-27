@@ -5,12 +5,17 @@ import org.embulk.config.*;
 import org.embulk.spi.*;
 import org.embulk.spi.time.Timestamp;
 import org.embulk.spi.type.Types;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.time.Instant;
 import java.util.*;
 
 public class OracleLookupFilterPlugin
         implements FilterPlugin {
+    private static final Logger logger = LoggerFactory.getLogger(OracleLookupFilterPlugin.class);
+
     public interface PluginTask
             extends Task {
 
@@ -20,10 +25,7 @@ public class OracleLookupFilterPlugin
         @Config("port")
         public String getPort();
 
-        @Config("database")
-        public String getDatabase();
-
-        @Config("table")
+        @Config("table_name")
         public String getTableName();
 
         @Config("username")
@@ -48,6 +50,14 @@ public class OracleLookupFilterPlugin
         @Config("driver_class")
         @ConfigDefault("null")
         public Optional<String> getDriverClass();
+
+        @Config("sid_name")
+        @ConfigDefault("null")
+        public Optional<String> getSID();
+
+        @Config("url")
+        @ConfigDefault("null")
+        public Optional<String> getURL();
     }
 
 
@@ -132,7 +142,7 @@ public class OracleLookupFilterPlugin
                     columnNeedsToBeFetched += newColumns.get(i);
                 }
             }
-            query += columnNeedsToBeFetched + " from "+task.getDatabase()+"." +task.getTableName();
+            query += columnNeedsToBeFetched + " from "+task.getTableName();
 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -200,6 +210,9 @@ public class OracleLookupFilterPlugin
                 columnConfigList.add(columnConfig);
             }
 
+            Set<String> unmatchedData = new LinkedHashSet<>();
+            List<String> keyColumns = task.getMappingFrom();
+
             while (reader.nextRecord()) {
 
                 int colNum = 0;
@@ -232,6 +245,8 @@ public class OracleLookupFilterPlugin
                 List<String> matchedData = new ArrayList<>();
                 if (keyValuePair.containsKey(key)) {
                     matchedData = keyValuePair.get(key);
+                }else{
+                    unmatchedData.add(key);
                 }
 
                 if (matchedData.size() == 0) {
@@ -247,6 +262,18 @@ public class OracleLookupFilterPlugin
                 }
                 builder.addRecord();
             }
+            String info="\n--------------------Unmatched rows.....................\nMapping Key Columns: ";
+            for(int i=0;i<keyColumns.size();i++){
+                info+= keyColumns.get(i);
+                if(i!=keyColumns.size()-1){
+                    info+=",";
+                }
+            }
+            info+="\n";
+            for(String key: unmatchedData){
+                info+= key+"\n";
+            }
+            logger.info(info);
         }
 
 
@@ -282,7 +309,8 @@ public class OracleLookupFilterPlugin
             } else if (Types.DOUBLE.equals(column.getType())) {
                 if (keyMap.get("Key") < inputColumns.size()) {
                     if (column.getName().equalsIgnoreCase(inputColumns.get(keyMap.get("Key")))) {
-                        searchingKeyData.add(String.valueOf(reader.getDouble(column)));
+                        long num = (long) reader.getDouble(column);
+                        searchingKeyData.add(String.valueOf(num));
                         int key = keyMap.get("Key");
                         keyMap.put("Key", ++key);
                     }
