@@ -20,10 +20,12 @@ public class OracleLookupFilterPlugin
             extends Task {
 
         @Config("host")
-        public String getHost();
+        @ConfigDefault("null")
+        public Optional<String> getHost();
 
         @Config("port")
-        public String getPort();
+        @ConfigDefault("null")
+        public Optional<String> getPort();
 
         @Config("table_name")
         public String getTableName();

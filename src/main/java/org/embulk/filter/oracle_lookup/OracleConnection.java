@@ -33,10 +33,10 @@ public class OracleConnection {
             String url;
             if(task.getURL().isPresent()){
                 url= task.getURL().get();
-            }else if(task.getSID().isPresent()){
-                url="jdbc:oracle:thin:@" + task.getHost() + ":"+task.getPort()+":"+task.getSID();
+            }else if(task.getSID().isPresent() && task.getHost().isPresent() && task.getPort().isPresent()){
+                url="jdbc:oracle:thin:@" + task.getHost().get() + ":"+task.getPort().get()+":"+task.getSID().get();
             }else{
-                throw new RuntimeException("sid name must be provided if url is not provided by the user");
+                throw new RuntimeException("sid_name,host and port no must be provided by the user if url has not been provided");
             }
             connection= DriverManager.getConnection(url, task.getUserName(), task.getPassword());
         }catch (Exception e){
