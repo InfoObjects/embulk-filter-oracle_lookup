@@ -15,8 +15,8 @@ An Embulk filter plugin for Lookup Transformation with Oracle database
 ## Configuration
 ​
 - **oracle_lookup**: Required attributes for the LookUp Filter Plugin -
-    - **driver_path**: driver path for your driver which you installed in your system (example `C:/Users/Abhishek Gupta/Desktop/mysql-connector-java-8.0.29-tidb-1.0.1.jar`)
-    - **driver_class**: driver class name (example `oracle.jdbc.driver.OracleDriver`)
+    - **driver_path**: driver path for your driver which you installed in your system(required) (example `....Path..../jarname.jar`)
+    - **driver_class**: driver class name(required) (example `oracle.jdbc.driver.OracleDriver`)
     - **host**: database host (example `localhost`) (required)
     - **port**: database port (example port for oracle `1521`) (required)
     - **database**: database name (required)

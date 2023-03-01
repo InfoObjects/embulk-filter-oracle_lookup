@@ -26,9 +26,9 @@ public class OracleConnection {
     private OracleConnection(OracleLookupFilterPlugin.PluginTask task) throws Exception {
         try{
             if(task.getDriverClass().isPresent() && task.getDriverPath().isPresent()){
-                this.loadMySqlJdbcDriver(task.getDriverClass().get(),task.getDriverPath());
+                this.loadOracleJdbcDriver(task.getDriverClass().get(),task.getDriverPath());
             }else{
-                this.loadMySqlJdbcDriver("oracle.jdbc.driver.OracleDriver",task.getDriverPath());
+                this.loadOracleJdbcDriver("oracle.jdbc.driver.OracleDriver",task.getDriverPath());
             }
             String url;
             if(task.getURL().isPresent()){
@@ -62,78 +62,47 @@ public class OracleConnection {
         }
         return connection;
     }
-    private Class<? extends java.sql.Driver> loadMySqlJdbcDriver(
+    private Class<? extends java.sql.Driver> loadOracleJdbcDriver(
             final String className,
             final Optional<String> driverPath)
     {
-        synchronized (mysqlJdbcDriver) {
-            if (mysqlJdbcDriver.get() != null) {
-                return mysqlJdbcDriver.get();
+        synchronized (oracleJdbcDriver) {
+            if (oracleJdbcDriver.get() != null) {
+                return oracleJdbcDriver.get();
+            }
+
+            if (driverPath.isPresent()) {
+                logger.info(
+                        "\"driver_path\" is set to load the Oracle JDBC driver class \"{}\". Adding it to classpath.", className);
+                this.addDriverJarToClasspath(driverPath.get());
             }
 
             try {
                 // If the class is found from the ClassLoader of the plugin, that is prioritized the highest.
-                final Class<? extends java.sql.Driver> found = loadJdbcDriverClassForName(className);
-                mysqlJdbcDriver.compareAndSet(null, found);
+                final Class<? extends java.sql.Driver> found = loadOracleJdbcDriverClassForName(className);
+                oracleJdbcDriver.compareAndSet(null, found);
 
                 if (driverPath.isPresent()) {
                     logger.warn(
-                            "\"driver_path\" is set while the MySQL JDBC driver class \"{}\" is found from the PluginClassLoader."
+                            "\"driver_path\" is set while the Oracle JDBC driver class \"{}\" is found from the PluginClassLoader."
                                     + " \"driver_path\" is ignored.", className);
                 }
                 return found;
             }
             catch (final ClassNotFoundException ex) {
-                // Pass-through once.
+                throw new ConfigException("The Oracle JDBC driver for the class \"" + className + "\" is not found.", ex);
             }
 
-            if (driverPath.isPresent()) {
-                logger.info(
-                        "\"driver_path\" is set to load the MySQL JDBC driver class \"{}\". Adding it to classpath.", className);
-                this.addDriverJarToClasspath(driverPath.get());
-            }
-            else {
-                final File root = this.findPluginRoot();
-                final File driverLib = new File(root, "default_jdbc_driver");
-                final File[] files = driverLib.listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(final File file)
-                    {
-                        return file.isFile() && file.getName().endsWith(".jar");
-                    }
-                });
-                if (files == null || files.length == 0) {
-                    throw new ConfigException(new ClassNotFoundException(
-                            "The MySQL JDBC driver for the class \"" + className + "\" is not found"
-                                    + " in \"default_jdbc_driver\" (" + root.getAbsolutePath() + ")."));
-                }
-                for (final File file : files) {
-                    logger.info(
-                            "The MySQL JDBC driver for the class \"{}\" is expected to be found"
-                                    + " in \"default_jdbc_driver\" at {}.", className, file.getAbsolutePath());
-                    this.addDriverJarToClasspath(file.getAbsolutePath());
-                }
-            }
-
-            try {
-                // Retrying to find the class from the ClassLoader of the plugin.
-                final Class<? extends java.sql.Driver> found = loadJdbcDriverClassForName(className);
-                mysqlJdbcDriver.compareAndSet(null, found);
-                return found;
-            }
-            catch (final ClassNotFoundException ex) {
-                throw new ConfigException("The MySQL JDBC driver for the class \"" + className + "\" is not found.", ex);
-            }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static Class<? extends java.sql.Driver> loadJdbcDriverClassForName(final String className) throws ClassNotFoundException
+    private static Class<? extends java.sql.Driver> loadOracleJdbcDriverClassForName(final String className) throws ClassNotFoundException
     {
         return (Class<? extends java.sql.Driver>) Class.forName(className);
     }
 
-    private static final AtomicReference<Class<? extends java.sql.Driver>> mysqlJdbcDriver = new AtomicReference<>();
+    private static final AtomicReference<Class<? extends java.sql.Driver>> oracleJdbcDriver = new AtomicReference<>();
 
     private static final Logger logger = LoggerFactory.getLogger(OracleConnection.class);
 
