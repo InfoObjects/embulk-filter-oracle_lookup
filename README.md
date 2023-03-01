@@ -5,10 +5,9 @@
 <p align="center">Infoobjects is a consulting company that helps enterprises transform how and where they run applications and infrastructure.
 From strategy, to implementation, to ongoing managed services, Infoobjects creates tailored cloud solutions for enterprises at all stages of the cloud journey.</p>
 
-# Postgres lookup filter plugin for Embulk
+# Oracle lookup filter plugin for Embulk
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-# Oracle lookup filter plugin for Embulk
 ​
 An Embulk filter plugin for Lookup Transformation with Oracle database
 ​
