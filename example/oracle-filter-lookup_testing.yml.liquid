@@ -6,29 +6,27 @@ in:
   database: DEMO
   user: MYUSER
   password: ABCD
-  table: database_table
+  table: customers
   column_options:
     id: {value_type: long}
 filters:
   - type: oracle_lookup
+    url: jdbc:oracle:thin:@localhost:1521:orcl
     driver_path: "C:/drivers/ojdbc8.jar"
     driver_class: 'oracle.jdbc.driver.OracleDriver'
-    host: localhost
-    port: 1521
-    database: orcl
-    table_name: lookup_table
+    table_name: car
     username: MYUSER
     password: ABCD
     mapping_from:
-      - ID
-      - NAME
+      - car_name
+      - company
     mapping_to:
-      - ID
-      - NAME
+      - name_of_car
+      - brand
     new_columns:
-      - { name: PIN, type: string }
-      - { name: GENDER, type: string }
-      - { name: PHONE_NUMBER, type: string }
+      - { name: car_id, type: string }
+      - { name: category, type: string }
+      - { name: fuel_capacity, type: string }
 
 out:
   type: jdbc
@@ -38,5 +36,5 @@ out:
   database: DEMO
   user: MYUSER
   password: ABCD
-  table: output_table_1
+  table: output
   mode: insert_direct

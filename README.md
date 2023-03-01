@@ -105,22 +105,24 @@ id  customer_name       address                     email                       
 ​
 ​
 ```yaml
-   - type: oracle_lookup
-     host: localhost
-     port: 1521
-     sid_name: XE
-     table_name: country
-     username: sys as sysdba
-     password: root
-     mapping_from:
-       - quarter_number
-       - attr_1
-     mapping_to:
-       - id
-       - country_address
-     new_columns:
-       - { name: country_name, type: string }
-       - { name: country_address, type: string }
+  filters:
+    - type: oracle_lookup
+      url: jdbc:oracle:thin:@localhost:1521:orcl
+      driver_path: "C:/drivers/ojdbc8.jar"
+      driver_class: 'oracle.jdbc.driver.OracleDriver'
+      table_name: car
+      username: MYUSER
+      password: ABCD
+      mapping_from:
+        - car_name
+        - company
+      mapping_to:
+        - name_of_car
+        - brand
+      new_columns:
+        - { name: car_id, type: string }
+        - { name: category, type: string }
+        - { name: fuel_capacity, type: string }
 ```
 ​
 Notes:

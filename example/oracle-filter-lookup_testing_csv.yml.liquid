@@ -3,7 +3,7 @@ exec:
   min_output_tasks: 1
 in:
   type: file
-  path_prefix: "..path../database_table.csv"
+  path_prefix: "..path../customer.csv"
   parser:
     charset: UTF-8
     type: csv
@@ -11,32 +11,30 @@ in:
     quote: '"'
     header_line: true
     columns:
-     - { name: ID, type: long }
-     - { name: Name, type: string }
-     - { name: Age, type: string }
-     - { name: Address, type: string }
-     - { name: City, type: string }
-     - { name: Country, type: string }
-     - { name: Salary, type: long }filters:
+     - { name: id, type: long }
+     - { name: customer_name, type: string }
+     - { name: address, type: string }
+     - { name: email, type: string }
+     - { name: car_name, type: string }
+     - { name: company, type: string }
+filters:
   - type: oracle_lookup
+    url: jdbc:oracle:thin:@localhost:1521:orcl
     driver_path: "C:/drivers/ojdbc8.jar"
     driver_class: 'oracle.jdbc.driver.OracleDriver'
-    host: localhost
-    port: 1521
-    database: orcl
-    table: lookup_table
+    table_name: car
     username: MYUSER
     password: ABCD
     mapping_from:
-      - ID
-      - NAME
+      - car_name
+      - company
     mapping_to:
-      - ID
-      - NAME
+      - name_of_car
+      - brand
     new_columns:
-      - { name: PIN, type: string }
-      - { name: GENDER, type: string }
-      - { name: PHONE_NUMBER, type: string }
+      - { name: car_id, type: string }
+      - { name: category, type: string }
+      - { name: fuel_capacity, type: string }
 
 out:
   type: file
